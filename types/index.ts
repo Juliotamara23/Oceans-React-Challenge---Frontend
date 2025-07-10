@@ -1,7 +1,7 @@
 export interface Product {
   id: string;
   name: string;
-  price: string;
+  price: number | string;
 }
 
 // Interfaz para el payload de creación de producto
