@@ -16,12 +16,21 @@ export function formatCurrency(amount: number): string {
   }).format(amount)
 }
 
-export function formatDate(date: string): string {
+export function formatDate(date: string | null | undefined): string {
+  if (!date) {
+    return "Fecha no disponible";
+  }
+
+  const d = new Date(date);
+  if (isNaN(d.getTime())) {
+    return "Fecha inválida";
+  }
+
   return new Intl.DateTimeFormat("es-ES", {
     year: "numeric",
     month: "long",
     day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
-  }).format(new Date(date))
+  }).format(d);
 }

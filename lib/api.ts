@@ -16,7 +16,7 @@ const api = axios.create({
 });
 
 // HARDCODEAR TOKEN TEMPORALMENTE (1 hora de vida)
-const HARDCODED_AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwMzY0MGUwLTZlNWItNDlmOC05MTQwLThiMmQwYzNkOWY0OCIsInVzZXJuYW1lIjoiYWRtaW51c2VyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzUyMTc4NzMyLCJleHAiOjE3NTIxODIzMzJ9.fnahPzO2B9D7yK1J7vuM5FRVESjZYr7iVDSIZSc3N3g"; // <-- REEMPLAZA ESTO CON UN TOKEN REAL Y VÁLIDO
+const HARDCODED_AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwMzY0MGUwLTZlNWItNDlmOC05MTQwLThiMmQwYzNkOWY0OCIsInVzZXJuYW1lIjoiYWRtaW51c2VyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzUyMTgyODQ2LCJleHAiOjE3NTIxODY0NDZ9.5yCccdV3YUFCJxAWNvW7RIt0eZuuo4DqagWMBNK8BF4";
 
 api.interceptors.request.use((config) => {
   // En un entorno real, el token se obtendría del localStorage, de un Context/Redux, etc.
