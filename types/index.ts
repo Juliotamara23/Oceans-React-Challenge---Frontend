@@ -1,7 +1,7 @@
 export interface Product {
   id: string;
   name: string;
-  price: number;
+  price: string;
 }
 
 // Interfaz para el payload de creación de producto
@@ -12,18 +12,20 @@ export interface CartItem {
   quantity: number;
 }
 
-export interface OrderItem {
-  productId: string;
-  productName: string;
+// Interfaz para los ítems tal como vienen de la API en `orderProducts`
+export interface APIOrderItem {
+  id: string;
+  product: Product;
   quantity: number;
-  price: number;
+  priceAtPurchase: string;
 }
 
+// Interfaz de la orden tal como viene de la API
 export interface Order {
   id: string;
-  date: string;
-  items: OrderItem[];
-  total: number;
+  orderDate: string;
+  total: string;
+  orderProducts: APIOrderItem[];
 }
 
 // Interfaz para el payload de creación de orden
