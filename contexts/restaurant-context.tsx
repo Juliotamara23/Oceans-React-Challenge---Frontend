@@ -1,9 +1,8 @@
 "use client"
 
-import { createContext, useContext, useState, type ReactNode, useEffect } from "react"
+import { createContext, useContext, useState, type ReactNode, useEffect, useCallback } from "react"
 import type { Product, Order, CartItem, CreateProductDto, CreateOrderDto } from "@/types"
 import api from "@/lib/api"
-// import { generateId } from "@/lib/utils"
 
 interface RestaurantContextType {
   products: Product[]
@@ -28,12 +27,12 @@ export function RestaurantProvider({ children }: { children: ReactNode }) {
   const [products, setProducts] = useState<Product[]>([])
   const [orders, setOrders] = useState<Order[]>([])
   const [cart, setCart] = useState<CartItem[]>([])
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false)
+  const [error, setError] = useState<string | null>(null)
 
-  // --- Funciones de interacción con la API ---
+  // --- Funciones de interacción con la API usando useCallback ---
 
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -41,29 +40,28 @@ export function RestaurantProvider({ children }: { children: ReactNode }) {
       setProducts(response.data);
     } catch (err: any) {
       console.error("Error fetching products:", err);
-      setError(err.response?.data?.message || "Error al cargar productos.");
+      setError(err.response?.data?.message || err.message || "Error al cargar productos.");
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const addProduct = async (productData: CreateProductDto) => {
+  const addProduct = useCallback(async (productData: CreateProductDto) => {
     setLoading(true);
     setError(null);
     try {
       const response = await api.post<Product>('/products', productData);
       setProducts((prev) => [...prev, response.data]);
-      
     } catch (err: any) {
       console.error("Error adding product:", err);
-      setError(err.response?.data?.message || "Error al añadir producto.");
-      throw err; // Re-lanza el error para que el componente que llama lo pueda manejar
+      setError(err.response?.data?.message || err.message || "Error al añadir producto.");
+      throw err;
     } finally {
       setLoading(false);
     }
-  };
+  }, []); 
 
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -71,40 +69,11 @@ export function RestaurantProvider({ children }: { children: ReactNode }) {
       setOrders(response.data);
     } catch (err: any) {
       console.error("Error fetching orders:", err);
-      setError(err.response?.data?.message || "Error al cargar órdenes.");
+      setError(err.response?.data?.message || err.message || "Error al cargar órdenes.");
     } finally {
       setLoading(false);
     }
-  };
-
-  const createOrder = async () => {
-    if (cart.length === 0) {
-      setError("No hay productos en el carrito para crear una orden.");
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      const orderData: CreateOrderDto = {
-        items: cart.map((item) => ({
-          productId: item.product.id,
-          quantity: item.quantity,
-        })),
-      };
-      
-      const response = await api.post<Order>('/orders', orderData);
-      setOrders((prev) => [response.data, ...prev]);
-      clearCart(); // Limpiar carrito solo si la orden se creó exitosamente
-    } catch (err: any) {
-      console.error("Error creating order:", err);
-      setError(err.response?.data?.message || "Error al crear la orden.");
-      throw err; // Re-lanza el error para el componente que llama
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, []);
 
   // --- Funciones de manejo del carrito ---
 
@@ -134,6 +103,35 @@ export function RestaurantProvider({ children }: { children: ReactNode }) {
     setCart([])
   }
 
+  const createOrder = useCallback(async () => {
+    if (cart.length === 0) {
+      setError("No hay productos en el carrito para crear una orden.");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const orderData: CreateOrderDto = {
+        items: cart.map((item) => ({
+          productId: item.product.id,
+          quantity: item.quantity,
+        })),
+      };
+      
+      const response = await api.post<Order>('/orders', orderData);
+      setOrders((prev) => [response.data, ...prev]);
+      clearCart();
+    } catch (err: any) {
+      console.error("Error creating order:", err);
+      setError(err.response?.data?.message || err.message || "Error al crear la orden.");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, [cart, clearCart]);
+
   const getCartTotal = () => {
     return cart.reduce((total, item) => total + item.product.price * item.quantity, 0)
   }
@@ -142,7 +140,7 @@ export function RestaurantProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     fetchProducts();
     fetchOrders();
-  }, []);
+  }, [fetchProducts, fetchOrders]);
 
   return (
     <RestaurantContext.Provider
