@@ -48,7 +48,6 @@ export function AppSidebar() {
       <SidebarHeader className="border-b p-4">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">RestaurantApp</h2>
-          <SidebarTrigger className="h-6 w-6" />
         </div>
       </SidebarHeader>
       <SidebarContent>
