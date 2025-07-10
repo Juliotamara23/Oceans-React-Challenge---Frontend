@@ -13,8 +13,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarHeader,
-  SidebarTrigger,
+  SidebarHeader
 } from "@/components/ui/sidebar"
 
 const items = [
