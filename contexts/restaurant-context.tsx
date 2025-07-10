@@ -133,7 +133,7 @@ export function RestaurantProvider({ children }: { children: ReactNode }) {
   }, [cart, clearCart]);
 
   const getCartTotal = () => {
-    return cart.reduce((total, item) => total + item.product.price * item.quantity, 0)
+    return cart.reduce((total, item) => total + (item.product.price as number) * item.quantity, 0)
   }
 
   // --- Cargar datos iniciales al montar el contexto ---
