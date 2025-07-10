@@ -19,7 +19,6 @@ export function ProductCard({
   quantity = 0,
   onAdd,
   onRemove,
-  onQuantityChange,
   showControls = true,
 }: ProductCardProps) {
   return (
@@ -28,7 +27,7 @@ export function ProductCard({
         <CardTitle className="text-lg">{product.name}</CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="text-2xl font-bold text-green-600">{formatCurrency(product.price)}</p>
+        <p className="text-2xl font-bold text-green-600">{formatCurrency(product.price as number)}</p>
       </CardContent>
       {showControls && (
         <CardFooter className="flex items-center justify-between">
