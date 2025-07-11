@@ -1,83 +1,76 @@
 "use client"
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
-import type { User, LoginInput, UserRole } from "@/types/auth"
-import api from "@/lib/api"
+import type { User, LoginCredentials } from "@/types/auth"
 
 interface AuthContextType {
   user: User | null
   isLoading: boolean
-  login: (credentials: LoginInput) => Promise<boolean>
+  login: (credentials: LoginCredentials) => Promise<boolean>
   logout: () => void
   isAuthenticated: boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
+// Usuarios mockeados para la demo
+const mockUsers: (User & { password: string })[] = [
+  {
+    id: "1",
+    username: "adminuser",
+    password: "adminpassword",
+    name: "admin",
+    role: "Administrador",
+  },
+  {
+    id: "2",
+    username: "mesero",
+    password: "mesero123",
+    name: "Juan Pérez",
+    role: "Mesero",
+  },
+]
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [authToken, setAuthToken] = useState<string | null>(null);
 
-  // Verificar si hay una sesión guardada y el token al cargar
+  // Verificar si hay una sesión guardada al cargar
   useEffect(() => {
-    const savedToken = localStorage.getItem("restaurant-auth-token");
-    const savedUser = localStorage.getItem("restaurant-user");
-
-    if (savedToken && savedUser) {
+    const savedUser = localStorage.getItem("restaurant-user")
+    if (savedUser) {
       try {
-        const parsedUser: User = JSON.parse(savedUser);
-        setUser(parsedUser);
-        setAuthToken(savedToken);
+        setUser(JSON.parse(savedUser))
       } catch (error) {
-        console.error("Error parsing saved user or token:", error);
-        localStorage.removeItem("restaurant-user");
-        localStorage.removeItem("restaurant-auth-token");
+        localStorage.removeItem("restaurant-user")
       }
     }
-    setIsLoading(false);
-  }, []);
+    setIsLoading(false)
+  }, [])
 
-  // useEffect para configurar/limpiar el token de Axios cuando authToken cambie
-  useEffect(() => {
-    if (authToken) {
-      api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
-    } else {
-      delete api.defaults.headers.common['Authorization'];
+  const login = async (credentials: LoginCredentials): Promise<boolean> => {
+    setIsLoading(true)
+
+    // Simular delay de autenticación
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
+    const foundUser = mockUsers.find((u) => u.username === credentials.username && u.password === credentials.password)
+
+    if (foundUser) {
+      const { password, ...userWithoutPassword } = foundUser
+      setUser(userWithoutPassword)
+      localStorage.setItem("restaurant-user", JSON.stringify(userWithoutPassword))
+      setIsLoading(false)
+      return true
     }
-  }, [authToken]);
 
-
-  const login = async (credentials: LoginInput): Promise<boolean> => {
-    setIsLoading(true);
-    try {
-      // Asume que tu API de login es POST /auth/login y devuelve { accessToken: "...", user: {...} }
-      const response = await api.post<{ accessToken: string, user: User }>('/auth/login', credentials);
-
-      const { accessToken, user: apiUser } = response.data;
-
-      // Almacenar token y usuario
-      localStorage.setItem("restaurant-auth-token", accessToken);
-      localStorage.setItem("restaurant-user", JSON.stringify(apiUser));
-
-      setAuthToken(accessToken); // Actualizar estado del token
-      setUser(apiUser); // Actualizar estado del usuario
-
-      return true;
-    } catch (error: any) {
-      console.error("Login failed:", error.response?.data?.message || error.message);
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
+    setIsLoading(false)
+    return false
   }
 
   const logout = () => {
-    setUser(null);
-    setAuthToken(null);
-    localStorage.removeItem("restaurant-user");
-    localStorage.removeItem("restaurant-auth-token");
-    // Opcional: Redirigir a la página de login aquí o en un componente superior
+    setUser(null)
+    localStorage.removeItem("restaurant-user")
   }
 
   return (

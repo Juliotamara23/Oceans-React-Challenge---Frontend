@@ -9,19 +9,11 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { InputField } from "@/components/form-field"
 import { useAuth } from "@/contexts/auth-context"
 import { loginSchema, type LoginFormData } from "@/lib/auth-validations"
-import { ChefHat, AlertCircle, Loader2 } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { ChefHat, AlertCircle } from "lucide-react"
 
 export function LoginPage() {
-  const { login, isLoading, isAuthenticated } = useAuth()
+  const { login, isLoading } = useAuth()
   const [error, setError] = useState<string>("")
-  const router = useRouter()
-
-  // Redireccionar si ya está autenticado
-  if (isAuthenticated) {
-    router.push("/");
-    return null;
-  }
 
   const {
     register,
@@ -34,19 +26,10 @@ export function LoginPage() {
   const onSubmit = async (data: LoginFormData) => {
     setError("")
 
-    try {
-      const success = await login(data)
+    const success = await login(data)
 
-      if (!success) {
-        setError("Usuario o contraseña incorrectos. Por favor, inténtalo de nuevo.")
-      } else {
-        // Si el login fue exitoso, AuthContext ya manejará la persistencia.
-        router.push("/");
-      }
-    } catch (err: any) {
-      // Este catch solo se ejecutará si la promesa `login` es rechaza
-      console.error("Error en el login:", err);
-      setError(err.response?.data?.message || "Ocurrió un error inesperado al iniciar sesión.");
+    if (!success) {
+      setError("Usuario o contraseña incorrectos")
     }
   }
 
@@ -87,22 +70,15 @@ export function LoginPage() {
             />
 
             <Button type="submit" className="w-full" disabled={isSubmitting || isLoading}>
-              {isSubmitting || isLoading ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                  Iniciando sesión...
-                </>
-              ) : (
-                "Iniciar Sesión"
-              )}
+              {isSubmitting || isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
             </Button>
           </form>
 
           <div className="mt-6 p-4 bg-muted rounded-lg">
-            <p className="text-sm font-medium mb-2">Usuarios de prueba (según tu API):</p>
+            <p className="text-sm font-medium mb-2">Usuarios de prueba:</p>
             <div className="space-y-1 text-xs text-muted-foreground">
               <p>
-                <strong>adminuser</strong> / adminpass
+                <strong>adminuser</strong> / adminpassword
               </p>
             </div>
           </div>
