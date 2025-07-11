@@ -4,7 +4,7 @@ Este proyecto es el frontend de un sistema de gestión para restaurantes, desarr
 
 ## Problema con la Autenticación (Login)
 
-**Nota Importante:** A pesar de varios intentos y depuraciones exhaustivas, la funcionalidad completa del login no se logró implementar de manera robusta y consistente. Se lograron avances en la conexión con el backend y la recepción de tokens y datos de usuario. Sin embargo, persisten problemas intermitentes relacionados con la persistencia del estado de autenticación entre recargas de página y la aplicación correcta de los tokens a las solicitudes HTTP subsiguientes. Esto resulta en redirecciones inesperadas y errores de `401 Unauthorized` al intentar acceder a rutas protegidas. Se recomienda una revisión a fondo del sistema de autenticación, especialmente el `AuthContext` y `AuthGuard`, para asegurar un manejo coherente del ciclo de vida del token y el estado de la sesión.
+**Nota Importante:** A pesar de varios intentos, no se logró hacer que el login funcionara bien debido a la falta de tiempo, decidí volver a una versión más estable del proyecto para poder mostrar el resto de la aplicación.
 
 ## 🚀 Cómo Correr el Proyecto
 
@@ -18,6 +18,8 @@ Antes de empezar, asegúrate de tener instalado lo siguiente:
 * **npm** (Node Package Manager) o **Yarn**: Incluido con Node.js, o puedes instalar Yarn globalmente (`npm install -g yarn`).
 
 ### Pasos de Instalación y Ejecución
+
+**Nota:** Si npm install no funciona se debe hacer un npm install --legacy-peer-deps (No alcanzé a investigar el porqué de este problema, pero parece ser un problema con las dependencias de Tailwind y Shadcn/ui).
 
 1.  **Clonar el Repositorio (si aún no lo has hecho):**
     ```bash
@@ -37,11 +39,10 @@ Antes de empezar, asegúrate de tener instalado lo siguiente:
 
 3.  **Configurar Variables de Entorno:**
     Crea un archivo `.env.local` en la raíz de tu proyecto frontend.
-    Necesitarás la URL de tu backend. Por ejemplo:
+    La URL del backend en este caso seria:
     ```
     NEXT_PUBLIC_BACKEND_URL=http://localhost:3001
     ```
-    Asegúrate de que la URL apunte a tu servidor backend en ejecución.
 
 4.  **Iniciar el Servidor de Desarrollo:**
     Usa npm:
