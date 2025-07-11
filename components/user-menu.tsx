@@ -12,22 +12,23 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { useAuth } from "@/contexts/auth-context"
 import { User, LogOut, Settings } from "lucide-react"
+import { toast } from "sonner"
 
 export function UserMenu() {
   const { user, logout } = useAuth()
 
   if (!user) return null
 
-  const initials = user.name
+  const initials = user.username
     .split(" ")
     .map((n) => n[0])
     .join("")
-    .toUpperCase()
+    .substring(0, 2)
+    .toUpperCase() || "UN"; // username para iniciales, y un fallback como "UN" (Unknown User)
 
   const handleLogout = () => {
-    if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-      logout()
-    }
+    logout();
+    toast.success("Has cerrado sesión exitosamente.");
   }
 
   return (
@@ -42,7 +43,7 @@ export function UserMenu() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{user.name}</p>
+            <p className="text-sm font-medium leading-none">{user.username}</p>
             <p className="text-xs leading-none text-muted-foreground">
               @{user.username} • {user.role}
             </p>
