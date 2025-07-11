@@ -4,7 +4,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 if (!API_BASE_URL) {
   console.error("Environment variable NEXT_PUBLIC_API_BASE_URL is not defined.");
-  // Error si quieres que falle en desarrollo si la URL no está
+  // Considera lanzar un error aquí si quieres que falle en desarrollo si la URL no está
   // throw new Error("API Base URL (NEXT_PUBLIC_API_BASE_URL) is not defined.");
 }
 
@@ -13,25 +13,6 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-});
-
-// HARDCODEAR TOKEN TEMPORALMENTE (1 hora de vida)
-const HARDCODED_AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwMzY0MGUwLTZlNWItNDlmOC05MTQwLThiMmQwYzNkOWY0OCIsInVzZXJuYW1lIjoiYWRtaW51c2VyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzUyMTgyODQ2LCJleHAiOjE3NTIxODY0NDZ9.5yCccdV3YUFCJxAWNvW7RIt0eZuuo4DqagWMBNK8BF4";
-
-api.interceptors.request.use((config) => {
-  // En un entorno real, el token se obtendría del localStorage, de un Context/Redux, etc.
-  // const token = localStorage.getItem('authToken');
-  const token = HARDCODED_AUTH_TOKEN; // Usando token hardcodeado temporalmente
-
-  if (token) {
-    if (!config.headers) {
-      config.headers = {};
-    }
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-}, (error) => {
-  return Promise.reject(error);
 });
 
 export default api;
