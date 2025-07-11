@@ -4,7 +4,9 @@ Este proyecto es el frontend de un sistema de gestión para restaurantes, desarr
 
 ## Problema con la Autenticación (Login)
 
-**Nota Importante:** A pesar de varios intentos, no se logró hacer que el login funcionara bien debido a la falta de tiempo, decidí volver a una versión más estable del proyecto para poder mostrar el resto de la aplicación.
+**Nota Importantes:** A pesar de varios intentos, no se logró hacer que el login funcionara bien debido a la falta de tiempo, decidí volver a una versión más estable del proyecto para poder mostrar el resto de la aplicación.
+
+La pantalla de login tiene las credenciales de prueba para acceder, una vez a dentro para poder visualizar el dashboard y las funcionalidades de gestión de productos y órdenes se debe hacer login desde el backend y copiar el token de autenticación en `lib\api.ts`.
 
 ## 🚀 Cómo Correr el Proyecto
 
